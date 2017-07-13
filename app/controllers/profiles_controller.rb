@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   
-  # Get to /users/:user_id/profile/new
+  # GET to /users/:user_id/profile/new
   def new
     # Render a blank profile details form
     @profile = Profile.new
@@ -20,10 +20,26 @@ class ProfilesController < ApplicationController
     end
   end
   
-  # Get to /users/:user_id/profile/edit
+  # GET to /users/:user_id/profile/edit
   def edit
     @user = User.find( params[:user_id]) 
     @profile = @user.profile
+  end
+  
+  # PUT to /users/:user_id/profile
+  def update
+    # Retrieve the user from the database
+    @user = User.find(id: params[:user_id]) 
+    # Retrieve the user's profile
+    @profile = @user.profile
+    # Mass assign edited profile attributes and save (update)
+    if @profile.update_attributes( profile_params )
+      flash[:success] = "Profile updated!"
+      # Redirect user to profile page
+      redirect_to user_path(id: params[:user_id])
+    else
+      render action: :edit
+    end
   end
   
   private
